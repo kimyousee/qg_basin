@@ -29,7 +29,8 @@ def fd2(N):
 if __name__ == '__main__':
     Nx = 40
     Ny = 40
-
+    nmodes = 1
+    
     H    = 5e2               # Fluid Depth
     beta = 2e-11             # beta parameter
     f0   = 2*np.pi/(3600*24) # Mean Coriolis parameters
@@ -71,7 +72,7 @@ if __name__ == '__main__':
 
     mode = np.empty(eigVecs.shape[0],dtype='complex')
 
-    for i in range(0,1):
+    for i in range(0,nmodes):
         mode = eigVecs[:,i]
         lvlr = np.linspace(mode.real.min(),mode.real.max(),20)
         lvli = np.linspace(mode.imag.min(),mode.imag.max(),20)
@@ -85,5 +86,7 @@ if __name__ == '__main__':
         plt.contourf(mode.imag,levels=lvli)
         plt.title('imag(psi)')
         plt.colorbar(extend='both')
+        
+        plt.savefig('QG_Basin.eps', format='eps', dpi=1000)
         plt.show()
 
