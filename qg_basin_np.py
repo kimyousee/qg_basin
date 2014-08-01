@@ -71,7 +71,8 @@ if __name__ == '__main__':
     # eigVals, eigVecs = eigs(A,10,B,ncv=21,which='LI',maxiter=250)
 
     mode = np.empty(eigVecs.shape[0],dtype='complex')
-
+    
+    if nmodes > mode.shape: nmodes = mode.shape
     for i in range(0,nmodes):
         mode = eigVecs[:,i]
         lvlr = np.linspace(mode.real.min(),mode.real.max(),20)
