@@ -70,7 +70,8 @@ if __name__ == '__main__':
     nEV = opts.getInt('nev', 10)
     Nx = opts.getInt('Nx',40)
     Ny = opts.getInt('Ny',40)
-
+    nmodes = opts.getInt('nm',1)
+    
     H    = 5e2               # Fluid Depth
     beta = 2e-11             # beta parameter
     f0   = 2*np.pi/(3600*24) # Mean Coriolis parameters
@@ -112,8 +113,9 @@ if __name__ == '__main__':
     nconv = E.getConverged()
     vr, wr = A.getVecs()
     vi, wi = A.getVecs()
-
-    for i in range(0,1):
+    
+    if nmodes > nconv: nmodes = nconv
+    for i in range(0,nmodes):
         eigVal = E.getEigenvalue(i)*1j
         #print eigVal.real + eigVal.imag*1j
 
@@ -149,6 +151,8 @@ if __name__ == '__main__':
             plt.contourf(mode.imag,levels=lvli)
             plt.title('imag(psi)')
             plt.colorbar(extend='both')
+            
+            plt.savefig('QG_Basin.eps', format='eps', dpi=1000)
             plt.show()
 
             # vr2d = np.reshape(vr,[Ny-1,Ny-1],order='F')
