@@ -152,7 +152,8 @@ if __name__ == '__main__':
             plt.title('imag(psi)')
             plt.colorbar(extend='both')
             
-            plt.savefig('QG_Basin.eps', format='eps', dpi=1000)
+            fig = "QG_Basin_m%d" % i
+            plt.savefig(fig, format='eps', dpi=1000)
             plt.show()
 
             # vr2d = np.reshape(vr,[Ny-1,Ny-1],order='F')
