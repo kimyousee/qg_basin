@@ -35,12 +35,8 @@ def petscKron(A,B):
     Ar,Ac = np.nonzero(A)
 
     # Need to have values on first axis
-    if Ar.shape[0] == 1:
-        Ar = Ar.T
-        Ac = Ac.T
-    if Br.shape[0] == 1:
-        Br = Br.T
-        Bc = Bc.T
+    Ar = np.asarray(Ar).ravel(); Ac = np.asarray(Ac).ravel()
+    Br = np.asarray(Br).ravel(); Bc = np.asarray(Bc).ravel()
 
     # Distance between each 'block'
     n = B.shape[1]
@@ -50,15 +46,15 @@ def petscKron(A,B):
     K.setFromOptions(); K.setUp()
     start,end = K.getOwnershipRange()
 
-    for i in range(len(Ar)): # Go through each non-zero value in A
+    for i in xrange(len(Ar)): # Go through each non-zero value in A
         # br,bc are used to track which 'block' we're in (in result matrix)
         br,bc = n*Ar[i], n*Ac[i]
 
-        for j in range(len(Br)): # Go through non-zero values in B
-            # kr,kc used to see where to put the number in K
+        for j in xrange(len(Br)): # Go through non-zero values in B
+            # kr,kc used to see where to put the number in K (the indexs)
             kr = (Br[j]+br).astype(np.int32)
             kc = (Bc[j]+bc).astype(np.int32)
-            #Print(i,j,kr,kc)
+
             if start <= kr < end: # Make sure we're in the correct processor
                 K[kr, kc] = A[Ar[i],Ac[i]] * B[Br[j],Bc[j]]
 
