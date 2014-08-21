@@ -21,15 +21,16 @@ def fd2(N):
     e = np.ones(N+1)
 
     data = np.array([-1*e, 0*e, e])/(2*h)
-    D = sp.spdiags(data, [-1, 0, 1], N+1,N+1).todense()
+    D = sp.spdiags(data, [-1, 0, 1], N+1,N+1)
+    D = sp.csr_matrix(D)
     D[0, 0:2] = np.array([-1, 1])/h
     D[N, N-1:N+1] = np.array([-1, 1])/h
-    sp.dia_matrix(D)
 
-    D2 = sp.spdiags(np.array([e, -2*e, e])/h**2, [-1, 0, 1], N+1, N+1).todense()
+    D2 = sp.spdiags(np.array([e, -2*e, e])/h**2, [-1, 0, 1], N+1, N+1)
+    D2 = sp.csr_matrix(D2)
     D2[0, 0:3] = np.array([1, -2, 1])/h**2
     D2[N, N-2:N+1] = np.array([1,-2,1])/h**2
-    sp.dia_matrix(D2)
+
     return D, D2, x
 
 def petscKron(A,B):
@@ -126,7 +127,7 @@ if __name__ == '__main__':
     eigVals = np.empty([nmodes],dtype='complex')
     dataArr = np.array([H,beta,f0,g,Lx,Ly,nEV,Nx,Ny,nmodes,vr.getSize()])
 
-    for i in range(0,nmodes):
+    for i in xrange(0,nmodes):
         eigVal = E.getEigenvalue(i)*1j
 
         #print eigVal.real + eigVal.imag*1j
@@ -149,7 +150,7 @@ if __name__ == '__main__':
             eigVals[i] = eigVal
             #mode = np.empty(vr.getSize(),dtype='complex')
 
-            for j in range(0,vrSeq.getSize()):
+            for j in xrange(0,vrSeq.getSize()):
                 #mode[j] = vrSeq[j].real+vrSeq[j].imag*1j
                 eigVecs[j,i] = vrSeq[j].real+vrSeq[j].imag*1j
 
