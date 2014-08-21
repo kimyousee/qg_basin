@@ -16,15 +16,16 @@ def fd2(N):
     e = np.ones(N+1)
 
     data = np.array([-1*e, 0*e, e])/(2*h)
-    D = sp.spdiags(data, [-1, 0, 1], N+1,N+1).todense()
+    D = sp.spdiags(data, [-1, 0, 1], N+1,N+1)
+    D = sp.csr_matrix(D)
     D[0, 0:2] = np.array([-1, 1])/h
     D[N, N-1:N+1] = np.array([-1, 1])/h
-    sp.dia_matrix(D)
 
-    D2 = sp.spdiags(np.array([e, -2*e, e])/h**2, [-1, 0, 1], N+1, N+1).todense()
+    D2 = sp.spdiags(np.array([e, -2*e, e])/h**2, [-1, 0, 1], N+1, N+1)
+    D2 = sp.csr_matrix(D2)
     D2[0, 0:3] = np.array([1, -2, 1])/h**2
     D2[N, N-2:N+1] = np.array([1,-2,1])/h**2
-    sp.dia_matrix(D2)
+
     return D, D2, x
 
 def petscKron(A,B):
@@ -67,7 +68,7 @@ if __name__ == '__main__':
     Nx = opts.getInt('Nx',40)
     Ny = opts.getInt('Ny',40)
     nmodes = opts.getInt('nm',1)
-    
+
     H    = 5e2               # Fluid Depth
     beta = 2e-11             # beta parameter
     f0   = 2*np.pi/(3600*24) # Mean Coriolis parameters
@@ -111,7 +112,7 @@ if __name__ == '__main__':
     vi, wi = A.getVecs()
     
     if nmodes > nconv: nmodes = nconv
-    for i in range(0,nmodes):
+    for i in xrange(0,nmodes):
         eigVal = E.getEigenvalue(i)*1j
         #print eigVal.real + eigVal.imag*1j
 
@@ -132,7 +133,7 @@ if __name__ == '__main__':
         if rank == 0:
             mode = np.empty(vr.getSize(),dtype='complex')
 
-            for i in range(0,vrSeq.getSize()):
+            for i in xrange(0,vrSeq.getSize()):
                 mode[i] = vrSeq[i].real+vrSeq[i].imag*1j
 
             lvlr = np.linspace(mode.real.min(),mode.real.max(),20)
@@ -147,7 +148,7 @@ if __name__ == '__main__':
             plt.contourf(mode.imag,levels=lvli)
             plt.title('imag(psi)')
             plt.colorbar(extend='both')
-            
+
             fig = "QG_Basin_m%d" % i
             plt.savefig(fig, format='eps', dpi=1000)
             plt.show()
